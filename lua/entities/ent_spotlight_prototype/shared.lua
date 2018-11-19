@@ -33,6 +33,8 @@ ENT.LampPoseParams = {
 	[2] = "point_yaw"
 }
 
+-- MISC FUNCTIONS
+
 -- fucking dumb
 function ENT:SetupPoseParamsMap()
 	self.PoseParamsMap = {}
@@ -51,8 +53,4 @@ end
 
 function ENT:GetLightEnabled()
 	return self:GetNW2Bool("lamp.enabled")
-end
-
-function ENT:Initialize()
-	print("shared init")
 end
