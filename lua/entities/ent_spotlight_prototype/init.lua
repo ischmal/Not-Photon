@@ -1,6 +1,7 @@
 print("[NP Spot]: init.lua")
 
 AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("cl_debug_panel.lua")
 AddCSLuaFile("shared.lua")
 
 include("shared.lua")

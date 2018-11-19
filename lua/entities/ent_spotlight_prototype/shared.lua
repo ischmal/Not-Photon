@@ -17,6 +17,13 @@ ENT.LampSubMaterials = {
 	[2] = "np_spotlight/illum"
 }
 
+ENT.LampPoseParams = {
+	-- Up/Down Arrows
+	[1] = "point_pitch",
+	-- Left/Right Arrows
+	[2] = "point_yaw"
+}
+
 ENT.Model = "models/np_spotlight/test_spotlight.mdl"
 
 function ENT:GetLightEnabled()

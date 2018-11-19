@@ -1,6 +1,7 @@
 print("[NP Spot]: cl_init.lua")
 
 include("shared.lua")
+include("cl_debug_panel.lua")
 --
 -- client shit
 --
@@ -70,9 +71,9 @@ function ENT:Think()
 	end
 	-- local deg = (math.sin(CurTime()) * 90)
 	-- self:SetPoseParameter("point_yaw", deg)
-	self:SetPoseParameter("point_yaw", self.YawParam)
+	self:SetPoseParameter(self.LampPoseParams[2], self.YawParam)
 	-- self:SetPoseParameter("point_pitch", deg)
-	self:SetPoseParameter("point_pitch", self.PitchParam)
+	self:SetPoseParameter(self.LampPoseParams[1], self.PitchParam)
 end
 
 function ENT:OnRemove()
