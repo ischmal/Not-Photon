@@ -1,5 +1,3 @@
-print("[NP Spot]: cl_init.lua")
-
 include("shared.lua")
 include("cl_debug_panel.lua")
 --
@@ -21,6 +19,7 @@ function ENT:SetupLamp()
 	lamp:SetTexture("effects/flashlight001")
 	lamp:SetNearZ(2)
 	lamp:SetFarZ(500)
+	self:OnConfigureLamp(lamp)
 	lamp:Update()
 	self.ProjectedTexture = lamp
 end
@@ -82,10 +81,11 @@ local MOVE_DOWN = 1
 local MOVE_LEFT = 2
 local MOVE_RIGHT = 3
 
-function ENT:Adjust(dir)
+function ENT:Adjust(dir, mod)
+	mod = mod or 1
 	local min, max
 	if (dir == MOVE_UP or dir == MOVE_DOWN) then
-		local manip = self.PoseManipulationRates[self.LampPoseParams[1]]
+		local manip = self.PoseManipulationRates[self.LampPoseParams[1]] * mod
 		min, max = self:GetPoseParameterRange(self.PoseParamsMap[self.LampPoseParams[1]])
 		if dir == MOVE_UP then
 			local newVal = self.VerticalParam - manip
@@ -103,7 +103,7 @@ function ENT:Adjust(dir)
 			end
 		end
 	elseif (dir == MOVE_LEFT or dir == MOVE_RIGHT) then
-		local manip = self.PoseManipulationRates[self.LampPoseParams[2]]
+		local manip = self.PoseManipulationRates[self.LampPoseParams[2]] * mod
 		min, max = self:GetPoseParameterRange(self.PoseParamsMap[self.LampPoseParams[2]])
 		if dir == MOVE_LEFT then
 			local newVal = self.HorizontalParam + manip
@@ -137,13 +137,19 @@ hook.Add("Tick", "SpotlightPrototype", function()
 	if not IsValid(SPOTLIGHT_TARGET) then return end
 	local ent = SPOTLIGHT_TARGET
 	if not ent.PoseReady then return end
+	local modifier = 1
+	if input.IsKeyDown(KEY_LALT) then modifier = 0.25 end
+	if input.IsKeyDown(KEY_LSHIFT) then modifier = 2 end
 	if input.IsKeyDown(KEY_LEFT) then
-		ent:Adjust(MOVE_LEFT)
-	elseif input.IsKeyDown(KEY_RIGHT) then
-		ent:Adjust(MOVE_RIGHT)
-	elseif input.IsKeyDown(KEY_UP) then
-		ent:Adjust(MOVE_UP)
-	elseif input.IsKeyDown(KEY_DOWN) then
-		ent:Adjust(MOVE_DOWN)
+		ent:Adjust(MOVE_LEFT, modifier)
+	end
+	if input.IsKeyDown(KEY_RIGHT) then
+		ent:Adjust(MOVE_RIGHT, modifier)
+	end
+	if input.IsKeyDown(KEY_UP) then
+		ent:Adjust(MOVE_DOWN, modifier)
+	end
+	if input.IsKeyDown(KEY_DOWN, modifier) then
+		ent:Adjust(MOVE_UP, modifier)
 	end
 end)

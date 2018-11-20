@@ -1,5 +1,9 @@
-print("[NP Spot]: shared.lua")
 AddCSLuaFile()
+
+local edit_mode = true
+
+-- Must match entity folder name
+ENT.Class = "ent_spotlight_prototype"
 
 ENT.Model = "models/np_spotlight/test_spotlight.mdl"
 
@@ -12,7 +16,7 @@ ENT.Spawnable = true
 
 -- How fast/slow turning should be
 -- (percent per tick)
-ENT.ManipulationRate = 0.015
+ENT.ManipulationRate = 0.01
 
 -- Name of bone that light emits from
 ENT.LightBone = "light"
@@ -33,7 +37,25 @@ ENT.LampPoseParams = {
 	[2] = "point_yaw"
 }
 
+-- Add modifications to ProjectedTexture here.
+-- (see: http://wiki.garrysmod.com/page/Category:ProjectedTexture)
+-- Note: ProjectedTexture:Update() is automatically called after this function.
+function ENT:OnConfigureLamp(lamp)
+	lamp:SetNearZ(2)
+	lamp:SetBrightness(10)
+	lamp:SetFarZ(1000)
+	lamp:SetFOV(45)
+
+end
+
 -- MISC FUNCTIONS
+
+function ENT:ReloadUpdate()
+	if self.ProjectedTexture then 
+		self:OnConfigureLamp(self.ProjectedTexture)
+		self.ProjectedTexture:Update()
+	end
+end
 
 -- fucking dumb
 function ENT:SetupPoseParamsMap()
@@ -53,4 +75,15 @@ end
 
 function ENT:GetLightEnabled()
 	return self:GetNW2Bool("lamp.enabled")
+end
+
+if edit_mode then
+	local this = ENT
+	timer.Simple(0, function()
+		for _, ent in pairs(ents.GetAll()) do
+			if IsValid(ent) and ent:GetClass() == this.Class then
+				ent:ReloadUpdate()
+			end
+		end
+	end)
 end
